@@ -23,8 +23,10 @@
     </el-header>
     <el-container>
       <el-aside class="aside" width="200px">
-        <!-- 只保持一个子菜单展开 -->
-        <el-menu :unique-opened="true">
+        <!--:unique-opened="true"------- 只保持一个子菜单展开 
+        :router="true"------开启路由模式
+        -->
+        <el-menu :unique-opened="true" :router="true">
           <!-- 这里的index主要是控制打开，如果都一样，则打开一个全部都会展开 -->
           <el-submenu index="1">
             <template slot="title">
@@ -32,7 +34,7 @@
               <span>用户管理</span>
             </template>
 
-            <el-menu-item index="1-1">
+            <el-menu-item index="users">
               <i class="el-icon-s-custom"></i>
               <span>用户列表</span>
             </el-menu-item>
@@ -103,7 +105,12 @@
           </el-submenu>
         </el-menu>
       </el-aside>
-      <el-main class="main">Main</el-main>
+      <el-main class="main">
+        <!-- home.vue这里开启路由模式，index的值->path的值 -->
+        <!--  home.vue main-> router-view-->
+        <!-- router/index.js 在home中children配置users路由 -->
+        <router-view></router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>
