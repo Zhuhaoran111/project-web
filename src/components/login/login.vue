@@ -38,9 +38,16 @@ export default {
   methods: {
     //登陆请求
     handleLogin() {
+      console.log("aaaa");
       //下面就是简单的路由跳转，现在数据库没有建立。
-      this.$router.push({ name: "home" });
+      // this.$router.push({ name: "home" });
       this.$http.post("login", this.formdata).then((res) => {
+        /* 登陆成功
+         1.跳转home
+         2.提示成功
+         3.不成功  提示消息
+         */
+        console.log(res);
         const {
           data,
           meta: { msg, status },
@@ -48,9 +55,9 @@ export default {
 
         if (status === 200) {
           this.$router.push({ name: "home" });
-          // this.$message.success(msg);
+          this.$message.success(msg);
         } else {
-          // this.$message.warning(msg);
+          this.$message.warning(msg);
         }
       });
     },
