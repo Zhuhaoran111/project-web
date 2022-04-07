@@ -107,20 +107,23 @@ export default {
 
   methods: {
     /* 分页方法开始 */
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
-    },
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
-    },
+    // handleSizeChange(val) {
+    //   console.log(`每页 ${val} 条`);
+    // },
+    // handleCurrentChange(val) {
+    //   console.log(`当前页: ${val}`);
+    // },
     /* 分页方法结束 */
 
     async getUserList() {
+      //需要授权的API,必须在请求头中使用Authorization字段提供token令牌
+      const AUTH_TOKEN = localStorage.getItem("token");
+
+      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
       );
       console.log(res);
-      console.log("aaaaaaaaa");
     },
   },
 };

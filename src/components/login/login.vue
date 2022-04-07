@@ -13,10 +13,10 @@
        -->
       <h2>用户登陆</h2>
       <el-form-item label="用户名">
-        <el-input v-model="formdata.userName"></el-input>
+        <el-input v-model="formdata.username"></el-input>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input v-model="formdata.passWord"></el-input>
+        <el-input v-model="formdata.password"></el-input>
       </el-form-item>
       <el-button @click.prevent="handleLogin()" type="primary" class="login-btn"
         >登录</el-button
@@ -30,17 +30,18 @@ export default {
   data() {
     return {
       formdata: {
-        userName: "",
-        passWord: "",
+        username: "",
+        password: "",
       },
     };
   },
   methods: {
     //登陆请求
     handleLogin() {
-      console.log("aaaa");
+      console.log("1111111111");
       //下面就是简单的路由跳转，现在数据库没有建立。
       // this.$router.push({ name: "home" });
+      console.log(this.formdata);
       this.$http.post("login", this.formdata).then((res) => {
         /* 登陆成功
          1.跳转home
@@ -48,15 +49,19 @@ export default {
          3.不成功  提示消息
          */
         console.log(res);
+        console.log(res.status);
+        console.log(res.data.status);
         const {
           data,
           meta: { msg, status },
         } = res.data;
 
         if (status === 200) {
+          console.log("成功了");
           this.$router.push({ name: "home" });
           this.$message.success(msg);
         } else {
+          console.log("不成功");
           this.$message.warning(msg);
         }
       });
