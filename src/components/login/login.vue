@@ -62,8 +62,10 @@ export default {
         if (status === 200) {
           //登录成功，保存token值
           //利用localStorage.setItem保存token值
+          //目的：如果用户登录->url直接来到home组件
+          //在登录成功时，保存正确的用户的token
           localStorage.setItem("token", data.token);
-          console.log(localStorage.getItem("token"));
+          // console.log(localStorage.getItem("token"));
 
           console.log("成功了");
           this.$router.push({ name: "home" });

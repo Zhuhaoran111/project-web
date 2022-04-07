@@ -6,12 +6,12 @@
       <el-row>
         <el-col :span="4"
           ><div class="grid-content bg-purple">
-            <span class="headerspan">过去无可挽回，未来可以改变</span>
+            <!-- <span class="headerspan">过去无可挽回，未来可以改变</span> -->
           </div></el-col
         >
         <el-col :span="18" class="middle"
           ><div class="grid-content bg-purple-light">
-            <h3>电商后台管理系统</h3>
+            <!-- <h3>电商后台管理系统</h3> -->
           </div></el-col
         >
         <el-col :span="2"

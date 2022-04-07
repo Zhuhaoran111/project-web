@@ -7,6 +7,7 @@ import ElementUI from 'element-ui';
 
 //引入插件
 import MyServerHttp from '@/plugins/http.js';
+import moment from 'moment'
 
 
 //回顾axios
@@ -17,6 +18,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 //引入组件中公共的样式
 import '@/assets/css/reset.css'
+// import { HotModuleReplacementPlugin } from 'webpack';
 
 
 
@@ -28,7 +30,10 @@ Vue.use(MyServerHttp);
 
 Vue.config.productionTip = false;
 
-
+//全局过滤器(修改日期样式)
+Vue.filter('fmtdate', (v) => {
+    return moment(v).format('YYYY-MM--DD')
+})
 
 /* eslint-disable no-new */
 new Vue({
