@@ -16,7 +16,7 @@
         >
         <el-col :span="2"
           ><div class="grid-content bg-purple">
-            <a class="loginout" href="#">退出</a>
+            <a class="loginout" @click.prevent="handleSignout" href="#">退出</a>
           </div></el-col
         >
       </el-row>
@@ -116,7 +116,32 @@
 </template>
 
 <script>
-export default {};
+export default {
+  /* 下面的目的是：如果没有登录过，就不能进行home组件 */
+  beforeCreate() {
+    //获取token
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      //if token没有 ——>登陆
+      this.$router.push({ name: "login" });
+    } else {
+      //if token有——>继续渲染组件
+    }
+
+    //newVue之前自动触发
+  },
+  methods: {
+    handleSignout() {
+      /* 1.清除token值 */
+      localStorage.clear();
+      /* 2.提示 */
+      this.$message.success("退出成功");
+      /* 3.退出即跳转到登陆的页面 */
+      this.$router.push({ name: "login" });
+    },
+  },
+};
 </script>
 
 <style>

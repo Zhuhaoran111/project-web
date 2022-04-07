@@ -37,12 +37,15 @@ export default {
   },
   methods: {
     //登陆请求
-    handleLogin() {
-      console.log("1111111111");
+    async handleLogin() {
+      //希望 让异步操作的代码看起来同步代码   var a=10;   a++;
+      //ES7 async+await  作用：让异步操作的代码看起来像同步代码
+      //排队执行
+
       //下面就是简单的路由跳转，现在数据库没有建立。
       // this.$router.push({ name: "home" });
       console.log(this.formdata);
-      this.$http.post("login", this.formdata).then((res) => {
+      const res = await this.$http.post("login", this.formdata).then((res) => {
         /* 登陆成功
          1.跳转home
          2.提示成功
@@ -57,6 +60,11 @@ export default {
         } = res.data;
 
         if (status === 200) {
+          //登录成功，保存token值
+          //利用localStorage.setItem保存token值
+          localStorage.setItem("token", data.token);
+          console.log(localStorage.getItem("token"));
+
           console.log("成功了");
           this.$router.push({ name: "home" });
           this.$message.success(msg);

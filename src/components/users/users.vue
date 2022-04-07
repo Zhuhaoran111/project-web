@@ -61,65 +61,38 @@ export default {
       pagesize: 2,
 
       /* 表格绑定的数据 */
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "沐红鲤",
-          address: "北京上海",
-          mailBox: "774861369@qq.com",
-          createData: "2022-4-5",
-          userStatus: "活跃",
-          operate: "",
-        },
-        {
-          date: "2016-05-02",
-          name: "沐红鲤",
-          address: "北京上海",
-          mailBox: "774861369@qq.com",
-          createData: "2022-4-5",
-          userStatus: "活跃",
-          operate: "",
-        },
-        {
-          date: "2016-05-02",
-          name: "沐红鲤",
-          address: "北京上海",
-          mailBox: "774861369@qq.com",
-          createData: "2022-4-5",
-          userStatus: "活跃",
-          operate: "",
-        },
-        {
-          date: "2016-05-02",
-          name: "沐红鲤",
-          address: "北京上海",
-          mailBox: "774861369@qq.com",
-          createData: "2022-4-5",
-          userStatus: "活跃",
-          operate: "",
-        },
-      ],
+      userList: [],
+      tableData: [],
     };
   },
   created() {
-    this.getUserList();
+    this.getUserlist();
   },
 
   methods: {
     /* 分页方法开始 */
-    // handleSizeChange(val) {
-    //   console.log(`每页 ${val} 条`);
-    // },
-    // handleCurrentChange(val) {
-    //   console.log(`当前页: ${val}`);
-    // },
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+    },
     /* 分页方法结束 */
 
-    async getUserList() {
-      //需要授权的API,必须在请求头中使用Authorization字段提供token令牌
-      const AUTH_TOKEN = localStorage.getItem("token");
+    // async getUserList() {
+    //   需要授权的API,必须在请求头中使用Authorization字段提供token令牌
+    //   const AUTH_TOKEN = localStorage.getItem("token");
 
+    //   this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+    //   const res = await this.$http.get(
+    //     `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
+    //   );
+    //   console.log(res);
+    // },
+    async getUserlist() {
+      const AUTH_TOKEN = localStorage.getItem("token");
       this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${this.pagesize}`
       );
