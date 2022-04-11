@@ -8,13 +8,23 @@
       <el-breadcrumb-item>用户列表</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <!-- 2.搜索 ,一行显示，有许多列el-row，el-col-->
+    <!-- 2.搜索 ,一行显示，有许多列el-row，el-col,  clearable表示清除表单内容-->
     <el-row class="searchRow">
       <el-col>
-        <el-input placeholder="请输入内容" v-model="query" class="inputSearch">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input
+          placeholder="请输入内容"
+          clearable
+          @clear="loadUserList()"
+          v-model="query"
+          class="inputSearch"
+        >
+          <el-button
+            @click="searchUser()"
+            slot="append"
+            icon="el-icon-search"
+          ></el-button>
         </el-input>
-        <el-button type="success">添加用户</el-button>
+        <el-button type="success" @click="showAddUserDia()">添加用户</el-button>
       </el-col>
     </el-row>
 
@@ -43,9 +53,13 @@
       </el-table-column>
 
       <el-table-column prop="mg_state" label="用户状态">
-        <!-- 显示的组件，而不是字符串 ，外层包裹一个容器-->
+        <!-- 显示的组件，而不是字符串 ，外层包裹一个容器
+         v-model="scope.row.mg_state" 
+         v-model双向数据绑定-----数据变化，视图变化改变了数据，数据变化也影响了视图
+        -->
         <template slot-scope="scope">
           <el-switch
+            @change="changeMgState(scope.row)"
             v-model="scope.row.mg_state"
             active-color="#13ce66"
             inactive-color="#ff4949"
@@ -54,29 +68,36 @@
         </template>
       </el-table-column>
       <el-table-column prop="operate" label="操作">
-        <el-row>
+        <!--  -->
+        <template slot-scope="scope">
+          <!-- 编辑小按钮 -->
           <el-button
             size="mini"
             plain
             type="primary"
             icon="el-icon-edit"
             circle
+            @click="showEditUserDia(scope.row)"
           ></el-button>
+
           <el-button
             size="mini"
             plain
             type="danger"
             icon="el-icon-delete"
             circle
+            @click="showDeleUserMsgDia(scope.row.id)"
           ></el-button>
+
           <el-button
             size="mini"
             plain
             type="success"
             icon="el-icon-check"
             circle
+            @click="showSetUserRoleDia(scope.row)"
           ></el-button>
-        </el-row>
+        </template>
       </el-table-column>
     </el-table>
 
@@ -98,6 +119,77 @@
       :total="total"
     >
     </el-pagination>
+
+    <!-- 第一个添加用户的弹框 -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" label-width="100px">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="addUser">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- 第一个添加用户弹框结束 -->
+
+    <!--第二个编辑用户列表的弹框 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          <!-- el-input中加disabled表示不允许修改 -->
+          <el-input
+            disabled
+            v-model="form.username"
+            autocomplete="off"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="邮箱" label-width="100px">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" label-width="100px">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!--第二个编辑用户的弹框束 -->
+
+    <!-- 第三个分配角色弹框 -->
+    <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRol">
+      <el-form :model="form">
+        <el-form-item label="用户名" label-width="100px">
+          {{ "当前用户的用户名" }}
+        </el-form-item>
+        <el-form-item label="角色" label-width="100px">
+          <!-- 如果el-select的绑定数据的值和option中value值一样，就会显示改option的值 -->
+          <el-select v-model="currRoleId">
+            <el-option label="请选择" :value="-1"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRol = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleRol = false"
+          >确 定</el-button
+        >
+      </div>
+    </el-dialog>
+    <!-- 第三个分配弹框结束 -->
   </el-card>
 </template>
 
@@ -121,6 +213,21 @@ export default {
       total: 1,
       pagenum: 1,
       pagesize: 2,
+
+      /* 添加对话框有关的数据 */
+      dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false,
+      dialogFormVisibleRol: false,
+      //添加用户的表单数据
+      form: {
+        username: "",
+        password: "",
+        email: "",
+        mobile: "",
+      },
+      //分配角色
+      currUserId: -1,
+      currRoleId: -1,
     };
   },
   created() {
@@ -128,10 +235,122 @@ export default {
   },
 
   methods: {
+    //分配角色打开对话框
+    showSetUserRoleDia(user) {
+      this.dialogFormVisibleRol = true;
+    },
+
+    /* 修改用户状态(switch 开关) */
+    async changeMgState(user) {
+      const res = await this.$http.put(
+        `users/${user.id}/state/${user.mg_state}`
+      );
+      console.log(res);
+    },
+
+    //编辑用户--发送请求(确定按钮)
+    async editUser() {
+      /* 下面的form表单数据已经被复制，所以能拿到id */
+      const res = await this.$http.put(`users/${this.form.id}`, this.form);
+      //1.关闭对话框
+      this.dialogFormVisibleEdit = false;
+      //2.更新视图
+      this.getUserlist();
+    },
+
+    //显示编辑用户弹框(修改操作)
+    //出发编辑按钮，dialogFormVisibleEdit设置为true即可打开对话框
+    showEditUserDia(user) {
+      //获取用户数据
+      console.log(user);
+      this.form = user;
+
+      this.dialogFormVisibleEdit = true;
+    },
+
+    //删除用户打开一个消息盒子(消息确认弹框)
+    showDeleUserMsgDia(userId) {
+      this.$confirm("此操作将永久删除该文件, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(async () => {
+          /* 发送删除的请求:id------->用户id
+             1.data中找userId
+             2.把userId以参数的showDeleUserMsgBox形式传进来
+             3.注意；asyc卸载await最近函数的位置
+           */
+          const res = await this.$http.delete(`users/${userId}`);
+          console.log(res);
+
+          if (res.data.meta.status === 200) {
+            //删除后从第1页显示
+            this.pagenum = 1;
+            //更新视图
+            this.getUserlist();
+            this.$message({
+              type: "success",
+              message: "删除成功!",
+            });
+          }
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+
+    //添加用户---发送请求
+    async addUser() {
+      //2.关闭对话框
+      this.dialogFormVisibleAdd = false;
+      const res = await this.$http.post(`users`, this.form);
+      console.log(res);
+      const {
+        meta: { status, msg },
+        data,
+      } = res.data;
+
+      if (status == 201) {
+        //1.提示成功
+        this.$message.success(msg);
+        //3.更新数据列表
+        this.getUserlist();
+        //4.清空文本框
+        this.form = {};
+      } else {
+        this.$$message.warning(msg);
+      }
+    },
+
+    //添加用户,点击让它显示为true,显示功能
+    showAddUserDia() {
+      //由于编辑用户时把from表单给改了，所以添加用户时要把数据清清除
+      this.form = {};
+
+      this.dialogFormVisibleAdd = true;
+    },
+    /* 搜索用户开始 */
+    //按照input绑定的值query参数发送请求
+    searchUser() {
+      console.log("aaa");
+      this.getUserlist();
+    },
+
+    /*清空搜索框，重新获取数据  */
+    loadUserList() {
+      this.getUserlist();
+    },
+
+    /* 搜索用户结束 */
+
     /* 分页方法开始 */
     handleSizeChange(val) {
       //当选择每页显示多少条数据时，触发这个方法，然后每次都给pagenum赋值为1,,
-      //即每次选择第几页，pagenum都会重置，而不保留上一次的代码
+      //即每次选择第几页，pagenum都会重置，而不保留上一次的代码。
       this.pagenum = 1;
       //每页显示条数变化时，会发生变化，当每次选择每页多少条数据时，就会重新出发这个方法
       //然后让pagesize重新赋值，然后在重新渲染列表数据
@@ -196,5 +415,8 @@ export default {
 }
 .searchRow {
   margin-top: 20px;
+}
+.el-pagination {
+  margin-left: 230px;
 }
 </style>
