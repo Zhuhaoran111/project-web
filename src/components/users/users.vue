@@ -173,12 +173,26 @@
     <el-dialog title="分配角色" :visible.sync="dialogFormVisibleRol">
       <el-form :model="form">
         <el-form-item label="用户名" label-width="100px">
-          {{ "当前用户的用户名" }}
+          {{ currUsername }}
         </el-form-item>
         <el-form-item label="角色" label-width="100px">
-          <!-- 如果el-select的绑定数据的值和option中value值一样，就会显示改option的值 -->
+          <!-- 1.如果el-select的绑定数据的值和option中value值一样，就会显示改option的值 
+               2.如果el-select的绑定数据的值和lable的值一样，就显示的是什么，
+               3.当在页面中改变lable值，上面el-select值就会自动减1               
+          -->
           <el-select v-model="currRoleId">
             <el-option label="请选择" :value="-1"></el-option>
+            <!--for循环遍历要熟练运用(这里不是很熟悉) -->
+            <!-- item第每个数组的对象.通过item.roleName 
+            value值是当前角色名roleName对应的id值
+            -->
+            <el-option
+              :label="item.roleName"
+              :value="item.id"
+              v-for="(item, i) in roles"
+              :key="i"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -227,7 +241,9 @@ export default {
       },
       //分配角色
       currUserId: -1,
-      currRoleId: -1,
+      currRoleId: 1,
+      roles: [], //保存所有的角色数据
+      currUsername: "",
     };
   },
   created() {
@@ -236,7 +252,20 @@ export default {
 
   methods: {
     //分配角色打开对话框
-    showSetUserRoleDia(user) {
+    async showSetUserRoleDia(user) {
+      this.currUsername = user.username;
+
+      //获取所有的角色
+      const res1 = await this.$http.get(`roles`);
+      console.log(res1);
+      this.roles = res1.data.data;
+
+      //打开显示框，获取当前用户的角色id
+      const res = await this.$http.get(`users/${user.id}`);
+      // console.log(res);
+      //下面的代码是获取用户角色的rid
+      // res.data.data.rid
+      this.currRoleId = res.data.data.rid;
       this.dialogFormVisibleRol = true;
     },
 
