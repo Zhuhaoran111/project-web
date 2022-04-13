@@ -51,7 +51,8 @@
               <i class="el-icon-s-custom"></i>
               <span>角色列表</span>
             </el-menu-item>
-            <el-menu-item index="2-2">
+            <!-- 路由第一步，在index后面写标识 -->
+            <el-menu-item index="rights">
               <i class="el-icon-s-custom"></i>
               <span>权限列表</span>
             </el-menu-item>

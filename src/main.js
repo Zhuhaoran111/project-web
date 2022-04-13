@@ -7,6 +7,10 @@ import router from './router'
 //引入样式文件css
 import ElementUI from 'element-ui';
 
+//引入面包屑组件
+//MyBread其实就是组件选项所在的对象{template:'',data等},
+import MyBread from '@/components/cuscom/myBread.vue'
+
 //引入插件
 import MyServerHttp from '@/plugins/http.js';
 import moment from 'moment'
@@ -36,6 +40,9 @@ Vue.config.productionTip = false;
 Vue.filter('fmtdate', (v) => {
     return moment(v).format('YYYY-MM--DD')
 })
+
+//全局自定义组件
+Vue.component('my-bread', MyBread)
 
 /* eslint-disable no-new */
 new Vue({
