@@ -88,14 +88,14 @@
             circle
             @click="showDeleUserMsgDia(scope.row.id)"
           ></el-button>
-
+          <!-- scope.$index这是获取当前的索引值-------------------非常好用 -->
           <el-button
             size="mini"
             plain
             type="success"
             icon="el-icon-check"
             circle
-            @click="showSetUserRoleDia(scope.row)"
+            @click="showSetUserRoleDia(scope.row, scope.$index)"
           ></el-button>
         </template>
       </el-table-column>
@@ -252,17 +252,19 @@ export default {
 
   methods: {
     //分配角色打开对话框
-    async showSetUserRoleDia(user) {
+    async showSetUserRoleDia(user, index) {
+      console.log(index, "获取当前的index的值");
+      //赋值当前的用户名
       this.currUsername = user.username;
 
       //获取所有的角色
       const res1 = await this.$http.get(`roles`);
-      console.log(res1);
       this.roles = res1.data.data;
 
       //打开显示框，获取当前用户的角色id
       const res = await this.$http.get(`users/${user.id}`);
-      // console.log(res);
+      console.log(res);
+      console.log("这是获取当前用户角色的id");
       //下面的代码是获取用户角色的rid
       // res.data.data.rid
       this.currRoleId = res.data.data.rid;
@@ -274,7 +276,7 @@ export default {
       const res = await this.$http.put(
         `users/${user.id}/state/${user.mg_state}`
       );
-      console.log(res);
+      // console.log(res);
     },
 
     //编辑用户--发送请求(确定按钮)
@@ -291,7 +293,7 @@ export default {
     //出发编辑按钮，dialogFormVisibleEdit设置为true即可打开对话框
     showEditUserDia(user) {
       //获取用户数据
-      console.log(user);
+      // console.log(user);
       this.form = user;
 
       this.dialogFormVisibleEdit = true;
@@ -311,7 +313,7 @@ export default {
              3.注意；asyc卸载await最近函数的位置
            */
           const res = await this.$http.delete(`users/${userId}`);
-          console.log(res);
+          // console.log(res);
 
           if (res.data.meta.status === 200) {
             //删除后从第1页显示
@@ -337,7 +339,7 @@ export default {
       //2.关闭对话框
       this.dialogFormVisibleAdd = false;
       const res = await this.$http.post(`users`, this.form);
-      console.log(res);
+      // console.log(res);
       const {
         meta: { status, msg },
         data,
@@ -362,6 +364,7 @@ export default {
 
       this.dialogFormVisibleAdd = true;
     },
+
     /* 搜索用户开始 */
     //按照input绑定的值query参数发送请求
     searchUser() {
