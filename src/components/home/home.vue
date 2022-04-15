@@ -72,15 +72,13 @@ export default {
   /* 下面的目的是：如果没有登录过，就不能进行home组件 */
   beforeCreate() {
     //获取token
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      //if token没有 ——>登陆
-      this.$router.push({ name: "login" });
-    } else {
-      //if token有——>继续渲染组件
-    }
-
+    // const token = localStorage.getItem("token");
+    // if (!token) {
+    //if token没有 ——>登陆
+    //   this.$router.push({ name: "login" });
+    // } else {
+    //if token有——>继续渲染组件
+    // }
     //newVue之前自动触发
   },
   created() {

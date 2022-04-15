@@ -50,6 +50,7 @@
         <template slot-scope="scope">
           {{ scope.row.create_time | fmtdate }}</template
         >
+        <!-- {{ this.create_time }} -->
       </el-table-column>
 
       <el-table-column prop="mg_state" label="用户状态">
@@ -198,9 +199,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleRol = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleRol = false"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 第三个分配弹框结束 -->
@@ -216,7 +215,7 @@ export default {
       // username: "admin"
       // email: "adsfad@qq.com"
       // mobile: "12345678"
-      // create_time: 1486720211
+      create_time: "",
       // mg_state: true
       // id: 500
       // role_name: "超级管理员"
@@ -240,10 +239,15 @@ export default {
         mobile: "",
       },
       //分配角色
-      currUserId: -1,
+      currUserId: -1, //当前用户的Id
       currRoleId: 1,
       roles: [], //保存所有的角色数据
       currUsername: "",
+
+      //当添加用户时获取当前系统的时间
+      // nowYear: "",
+      // nowMouth: "",
+      // nowDate: "",
     };
   },
   created() {
@@ -251,11 +255,23 @@ export default {
   },
 
   methods: {
+    //修改用户角色-----发送请求
+    async setRole() {
+      //：id 要修改的的用户id的值
+      //请求体中的rid修改的新值角色id
+      const res = await this.$http.put(`users/${this.currUserId}/role`, {
+        rid: this.currRoleId,
+      });
+
+      //上面设置角色成功，关闭对话框
+      this.dialogFormVisibleRol = false;
+    },
+
     //分配角色打开对话框
-    async showSetUserRoleDia(user, index) {
-      console.log(index, "获取当前的index的值");
+    async showSetUserRoleDia(user) {
       //赋值当前的用户名
       this.currUsername = user.username;
+      this.currUserId = user.id;
 
       //获取所有的角色
       const res1 = await this.$http.get(`roles`);
@@ -339,7 +355,7 @@ export default {
       //2.关闭对话框
       this.dialogFormVisibleAdd = false;
       const res = await this.$http.post(`users`, this.form);
-      // console.log(res);
+      console.log(res);
       const {
         meta: { status, msg },
         data,
@@ -355,6 +371,10 @@ export default {
       } else {
         this.$$message.warning(msg);
       }
+
+      //添加用户时获取当前系统的时间
+
+      this.getdate();
     },
 
     //添加用户,点击让它显示为true,显示功能
@@ -434,6 +454,46 @@ export default {
         this.$$message.error(msg);
       }
     },
+
+    //获取当前时间的方法
+    // getdate() {
+    //   const year = new Date().getFullYear();
+    //   const mounth =
+    //     new Date().getMonth() + 1 < 10
+    //       ? "0" + (new Date().getMonth() + 1)
+    //       : new Date().getMonth() + 1;
+    //   const date =
+    //     new Date().getDate() < 10
+    //       ? "0" + new Date().getDate()
+    //       : new Date().getDate();
+
+    //   const hh = new Date().getHours();
+    //   const mf =
+    //     new Date().getMinutes() < 10
+    //       ? "0" + new Date().getMinutes()
+    //       : new Date().getMinutes();
+    //   const ss =
+    //     new Date().getSeconds() < 10
+    //       ? "0" + new Date().getSeconds()
+    //       : new Date().getSeconds();
+
+    //   this.nowYear = year;
+    //   this.nowMouth = mounth;
+    //   this.nowDate = date;
+    //   this.create_time =
+    //     this.nowYear +
+    //     "-" +
+    //     this.nowMouth +
+    //     "-" +
+    //     this.nowDate +
+    //     "-" +
+    //     hh +
+    //     ":" +
+    //     mf +
+    //     ":" +
+    //     ss;
+    //   console.log(this.create_time);
+    // },
   },
 };
 </script>
