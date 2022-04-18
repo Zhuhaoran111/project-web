@@ -7,6 +7,10 @@ import Home from '@/components/home/home.vue'
 import Users from '@/components/users/users.vue'
 import Rights from '@/components/rights/right.vue'
 import Role from '@/components/rights/role.vue'
+import Goodslist from '@/components/goods/goodslist.vue'
+import GoodsAdd from '@/components/goods/goodsadd.vue'
+import Cateparams from '@/components/goods/cateparams.vue'
+
 import { apply } from 'file-loader'
 
 /* 下面是引入element中的提示信息 */
@@ -35,7 +39,11 @@ const router = new Router({
                 path: '/rights',
                 component: Rights
             },
+
             { name: 'roles', path: '/roles', component: Role },
+            { name: 'goods', path: '/goods', component: Goodslist },
+            { name: 'goodsadd', path: '/goodsadd', component: GoodsAdd },
+            { name: 'params', path: '/params', component: Cateparams },
         ]
     }]
 })
